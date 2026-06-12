@@ -1,0 +1,19 @@
+# Phase 1 core (only numpy is strictly required)
+numpy>=1.24
+
+# Optional: gives you the demo chart
+matplotlib>=3.7
+
+# Backend (for the live dashboard server.py)
+fastapi>=0.110
+uvicorn>=0.27
+
+# Dev
+pytest>=7.4
+
+# --- added in later phases (left here as a roadmap, commented out) ---
+# gymnasium>=0.29        # wrap env in the RL standard API
+# torch>=2.1             # deep-RL: neural-network policies
+# pettingzoo>=1.24       # multi-agent environment
+# stable-baselines3>=2.2 # easy RL training
+# flwr>=1.7              # federated (private) learning

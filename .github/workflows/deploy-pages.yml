@@ -1,0 +1,44 @@
+name: Deploy VOLTA dashboard to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy
+      # Train the policy, run a demo day, and build the self-contained dashboard.
+      - run: |
+          python train_fleet.py || true
+          python train_dqn.py train 1500 || true
+          python export_run.py
+          python build_dashboard.py
+      # Publish the single self-contained HTML file as the site.
+      - run: |
+          mkdir -p _site
+          cp volta_dashboard.html _site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
